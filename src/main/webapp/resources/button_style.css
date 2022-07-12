@@ -1,0 +1,8 @@
+.table tbody td {
+    vertical-align: middle;
+}
+
+.btn-increase, .btn-decrease {
+    box-shadow: none;
+    font-size: 25px;
+}

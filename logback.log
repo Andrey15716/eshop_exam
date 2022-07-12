@@ -1,0 +1,9 @@
+424  [restartedMain] INFO  com.example.eshop.DemoApplication - Starting DemoApplication using Java 17.0.3 on 2f19 with PID 6972 (C:\Users\u108\IdeaProjects\eshop_exam\target\classes started by user124 in C:\Users\u108\IdeaProjects\eshop_exam)
+426  [restartedMain] DEBUG com.example.eshop.DemoApplication - Running with Spring Boot v2.7.1, Spring v5.3.21
+426  [restartedMain] INFO  com.example.eshop.DemoApplication - No active profile set, falling back to 1 default profile: "default"
+2236 [restartedMain] INFO  com.example.eshop.DemoApplication - Started DemoApplication in 2.027 seconds (JVM running for 2.499)
+5458 [http-nio-8282-exec-2] INFO  c.e.e.services.impl.UserServiceImpl - User is authenticated!
+6453 [http-nio-8282-exec-9] INFO  c.e.e.s.impl.CategoryServiceImpl - User got categoryData by id - 1
+7501 [http-nio-8282-exec-7] INFO  c.e.e.s.impl.ProductServiceImpl - User got product by id - 1
+9063 [http-nio-8282-exec-4] INFO  c.e.e.r.impl.OrderRepositoryImpl - User with id 2 created order with id 193
+10428 [http-nio-8282-exec-5] INFO  c.e.e.services.impl.UserServiceImpl - User got your profile account
