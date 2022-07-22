@@ -1,0 +1,15 @@
+.block1 {
+    float: right;
+    display: block;
+    width: 300px;
+    border: 1px solid #c7b5b5;
+    margin: 2px;
+}
+
+.row {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    width: 800px;
+    height: 100px;
+}
