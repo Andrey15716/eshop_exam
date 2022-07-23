@@ -1,6 +1,8 @@
 package com.example.eshop.services.impl;
 
 import com.example.eshop.entities.Product;
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.repositories.ProductRepository;
 import com.example.eshop.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,32 +28,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product create(Product entity) {
+    public Product create(Product entity) throws ServiceExceptions, RepositoryExceptions {
         return productRepository.create(entity);
     }
 
     @Override
-    public List<Product> read() {
+    public List<Product> read() throws ServiceExceptions, RepositoryExceptions {
         return productRepository.read();
     }
 
     @Override
-    public Product update(Product entity) {
+    public Product update(Product entity) throws ServiceExceptions, RepositoryExceptions {
         return productRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws ServiceExceptions, RepositoryExceptions {
         productRepository.delete(id);
     }
 
     @Override
-    public List<Product> getAllProductsByCategoryId(int categoryId) {
+    public List<Product> getAllProductsByCategoryId(int categoryId) throws RepositoryExceptions {
         return productRepository.getAllProductsByCategoryId(categoryId);
     }
 
     @Override
-    public ModelAndView getProductsBySearchRequest(String param) {
+    public ModelAndView getProductsBySearchRequest(String param) throws ServiceExceptions, RepositoryExceptions {
         ModelMap modelMap = new ModelMap();
         List<Product> productListResult = productRepository.getProductsBySearchRequest(param);
         modelMap.addAttribute(SEARCH_RESULT_PARAM.getValue(), productListResult);
@@ -60,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ModelAndView getProductById(int id) {
+    public ModelAndView getProductById(int id) throws ServiceExceptions, RepositoryExceptions {
         ModelMap modelMap = new ModelMap();
         Product product = productRepository.getProductById(id);
         if (Optional.ofNullable(product).isPresent()) {

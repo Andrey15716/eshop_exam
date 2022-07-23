@@ -2,6 +2,8 @@ package com.example.eshop.services.impl;
 
 import com.example.eshop.entities.Category;
 import com.example.eshop.entities.Product;
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.repositories.CategoryRepository;
 import com.example.eshop.services.CategoryService;
 import com.example.eshop.services.ProductService;
@@ -28,27 +30,27 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category create(Category entity) {
+    public Category create(Category entity) throws ServiceExceptions, RepositoryExceptions {
         return categoryRepository.create(entity);
     }
 
     @Override
-    public List<Category> read() {
+    public List<Category> read() throws ServiceExceptions, RepositoryExceptions {
         return categoryRepository.read();
     }
 
     @Override
-    public Category update(Category entity) {
+    public Category update(Category entity) throws ServiceExceptions, RepositoryExceptions {
         return categoryRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws ServiceExceptions, RepositoryExceptions {
         categoryRepository.delete(id);
     }
 
     @Override
-    public ModelAndView getCategoryData(int id) {
+    public ModelAndView getCategoryData(int id) throws ServiceExceptions, RepositoryExceptions {
         ModelMap modelMap = new ModelMap();
 
         Category category = categoryRepository.getCategoryById(id);

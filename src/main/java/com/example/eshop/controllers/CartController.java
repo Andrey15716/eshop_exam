@@ -2,6 +2,8 @@ package com.example.eshop.controllers;
 
 import com.example.eshop.entities.Cart;
 import com.example.eshop.entities.User;
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.services.CartService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,12 +29,12 @@ public class CartController {
     }
 
     @GetMapping("/add")
-    public ModelAndView addProductToCart(@RequestParam(PRODUCT_ID_PARAM) int productId, @ModelAttribute(SHOPPING_CART) Cart shopCart) {
+    public ModelAndView addProductToCart(@RequestParam(PRODUCT_ID_PARAM) int productId, @ModelAttribute(SHOPPING_CART) Cart shopCart) throws ServiceExceptions, RepositoryExceptions {
         return cartService.addProductToCart(productId, shopCart);
     }
 
     @GetMapping("/buy")
-    public ModelAndView buyProduct(@ModelAttribute(SHOPPING_CART) Cart shopCart, @SessionAttribute(USER) User user) {
+    public ModelAndView buyProduct(@ModelAttribute(SHOPPING_CART) Cart shopCart, @SessionAttribute(USER) User user) throws ServiceExceptions, RepositoryExceptions {
         return cartService.buyProduct(shopCart, user);
     }
 
