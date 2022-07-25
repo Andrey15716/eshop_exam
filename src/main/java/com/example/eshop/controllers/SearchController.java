@@ -1,5 +1,7 @@
 package com.example.eshop.controllers;
 
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.services.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +28,7 @@ public class SearchController {
     }
 
     @PostMapping
-    public ModelAndView getResult(@RequestParam(SEARCH_PARAM) String searchParam) {
+    public ModelAndView getResult(@RequestParam(SEARCH_PARAM) String searchParam) throws RepositoryExceptions, ServiceExceptions {
         return productService.getProductsBySearchRequest(searchParam);
     }
 }

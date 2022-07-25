@@ -2,6 +2,8 @@ package com.example.eshop.controllers;
 
 import com.example.eshop.entities.User;
 import com.example.eshop.exceptions.RegistrationExceptions;
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.services.UserService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,6 @@ import static com.example.eshop.utils.EshopConstants.NAME;
 import static com.example.eshop.utils.EshopConstants.PASSWORD;
 import static com.example.eshop.utils.EshopConstants.USER;
 import static com.example.eshop.utils.PagesPathEnum.REGISTRATION_PAGE;
-import static com.example.eshop.utils.PagesPathEnum.START_PAGE;
 
 @RestController
 @RequestMapping("/registration")
@@ -32,11 +33,11 @@ public class RegistrationController {
 
     @GetMapping
     public ModelAndView openRegistrationPage() {
-        return new ModelAndView(START_PAGE.getPath());
+        return new ModelAndView(REGISTRATION_PAGE.getPath());
     }
 
     @PostMapping
-    public ModelAndView login(@ModelAttribute(USER) @Valid User user, BindingResult bindingResult, ModelAndView modelAndView) throws RegistrationExceptions {
+    public ModelAndView login(@ModelAttribute(USER) @Valid User user, BindingResult bindingResult, ModelAndView modelAndView) throws RegistrationExceptions, ServiceExceptions, RepositoryExceptions {
         if (bindingResult.hasErrors()) {
             fieldError(NAME, modelAndView, bindingResult);
             fieldError(PASSWORD, modelAndView, bindingResult);

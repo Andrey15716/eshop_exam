@@ -2,6 +2,8 @@ package com.example.eshop.controllers;
 
 import com.example.eshop.entities.User;
 import com.example.eshop.exceptions.AuthorizationsExceptions;
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.services.UserService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping
-    public ModelAndView authenticate(@ModelAttribute(USER) @Valid User user, BindingResult bindingResult, ModelAndView modelAndView) throws AuthorizationsExceptions {
+    public ModelAndView authenticate(@ModelAttribute(USER) @Valid User user, BindingResult bindingResult, ModelAndView modelAndView) throws AuthorizationsExceptions, ServiceExceptions, RepositoryExceptions {
         if (bindingResult.hasErrors()) {
             fieldError(NAME, modelAndView, bindingResult);
             fieldError(PASSWORD, modelAndView, bindingResult);
@@ -48,7 +50,7 @@ public class AuthController {
     }
 
     @GetMapping("/profile")
-    public ModelAndView getProfilePage(@ModelAttribute(USER) User user) {
+    public ModelAndView getProfilePage(@ModelAttribute(USER) User user) throws ServiceExceptions, RepositoryExceptions {
         return userService.getProfileAccount(user);
     }
 

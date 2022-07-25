@@ -1,25 +1,34 @@
 package com.example.eshop.entities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@SuperBuilder
-public class Product extends BaseEntity {
-    private int categoryId;
-    private String name;
-    private String description;
-    private int price;
-    private String imageName;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-    public Product(int id, int categoryId, String name, String description, int price, String imageName) {
-        super(id);
-        this.categoryId = categoryId;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.imageName = imageName;
-    }
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "products")
+public class Product extends BaseEntity {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+    @Column
+    private String name;
+    @Column
+    private String description;
+    @Column
+    private int price;
+    @Column(name = "image_name")
+    private String imageName;
 }

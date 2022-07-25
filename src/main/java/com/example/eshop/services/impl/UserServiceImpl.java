@@ -4,6 +4,8 @@ import com.example.eshop.entities.Category;
 import com.example.eshop.entities.Order;
 import com.example.eshop.entities.Product;
 import com.example.eshop.entities.User;
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.repositories.OrderRepository;
 import com.example.eshop.repositories.ProductRepository;
 import com.example.eshop.repositories.UserRepository;
@@ -42,32 +44,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User entity) {
+    public User create(User entity) throws ServiceExceptions, RepositoryExceptions {
         return userRepository.addUser(entity);
     }
 
     @Override
-    public List<User> read() {
+    public List<User> read() throws ServiceExceptions, RepositoryExceptions {
         return userRepository.read();
     }
 
     @Override
-    public User update(User entity) {
+    public User update(User entity) throws ServiceExceptions, RepositoryExceptions {
         return userRepository.update(entity);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws ServiceExceptions, RepositoryExceptions {
         userRepository.delete(id);
     }
 
     @Override
-    public ModelAndView authenticate(User user) {
+    public ModelAndView authenticate(User user) throws ServiceExceptions, RepositoryExceptions {
         ModelAndView modelAndView = new ModelAndView();
         if (Optional.ofNullable(user).isPresent()
                 && Optional.ofNullable(user.getName()).isPresent()
                 && Optional.ofNullable(user.getPassword()).isPresent()) {
-            User loggedUser = userRepository.getUserByLoginAndPass(user.getName(), user.getPassword());
+            User loggedUser = userRepository.getUserByLoginAndPass(user);
             if (Optional.ofNullable(loggedUser).isPresent()) {
                 ModelMap modelMap = new ModelMap();
                 List<Category> categoriesList = categoryService.read();
@@ -84,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView addNewUser(User user) {
+    public ModelAndView addNewUser(User user) throws ServiceExceptions, RepositoryExceptions {
         ModelAndView modelAndView = new ModelAndView();
         ModelMap modelMap = new ModelMap();
         String username = user.getName();
@@ -97,9 +99,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView getProfileAccount(User user) {
+    public ModelAndView getProfileAccount(User user) throws ServiceExceptions, RepositoryExceptions {
         ModelAndView modelAndView = new ModelAndView();
-        User loggedInUser = userRepository.getUserByLoginAndPass(user.getName(), user.getPassword());
+        User loggedInUser = userRepository.getUserByLoginAndPass(user);
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute(LOGGED_IN_USER_PARAM.getValue(), loggedInUser);
         int userId = loggedInUser.getId();

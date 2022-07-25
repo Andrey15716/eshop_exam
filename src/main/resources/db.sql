@@ -19,13 +19,13 @@ CREATE TABLE IF NOT EXISTS eshop2.categories (
 --------------------------------------------------------
 DROP TABLE IF EXISTS eshop2.user;
 CREATE TABLE IF NOT EXISTS eshop2.user (
-                                           user_id INT NOT NULL AUTO_INCREMENT,
+                                           id INT NOT NULL AUTO_INCREMENT,
                                            name VARCHAR(50) NOT NULL,
     surname VARCHAR(100) NOT NULL,
     password VARCHAR(50) NOT NULL,
     date_of_birthday VARCHAR(50) NOT NULL,
-    PRIMARY KEY (user_id),
-    UNIQUE INDEX idx_user_user_id_unique (user_id ASC));
+    PRIMARY KEY (id),
+    UNIQUE INDEX idx_user_id_unique (id ASC));
 
 --------------------------------------------------------
 --  DDL for Table PRODUCTS
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS eshop2.orders (
                                              price VARCHAR(45) NOT NULL,
     date DATE NOT NULL,
     PRIMARY KEY (order_id),
-    FOREIGN KEY (user_id) REFERENCES user (user_id));
+    FOREIGN KEY (user_id) REFERENCES user (id));
 
 --------------------------------------------------------
 --  DDL for Table ORDER_PRODUCT
@@ -71,3 +71,6 @@ CREATE TABLE IF NOT EXISTS eshop2.order_product (
     CONSTRAINT FK_ORDERS_PRODUCTS_PRODUCT_ID_PRODUCTS_ID
     FOREIGN KEY (product_id)
     REFERENCES eshop2.products (id));
+
+INSERT INTO eshop2.user (name ,surname, password, date_of_birthday)
+VALUES ('admin', 'admin', 'admin', '2015-03-31');
