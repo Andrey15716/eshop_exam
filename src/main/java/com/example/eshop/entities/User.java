@@ -22,8 +22,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "user")
 public class User extends BaseEntity {
-    @Column(name = "user_id")
-    private int id;
     @Column
     private String name;
     @Column

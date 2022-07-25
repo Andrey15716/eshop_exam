@@ -21,8 +21,6 @@ import java.util.List;
 @Entity
 @Table(name = "categories")
 public class Category extends BaseEntity {
-    @Column(name = "id")
-    private int categoryId;
     @Column
     private String name;
     @Column(name = "image")

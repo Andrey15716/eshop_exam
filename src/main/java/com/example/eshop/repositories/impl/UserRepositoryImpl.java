@@ -87,7 +87,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserByLoginAndPass(User user) throws RepositoryExceptions {
-        Session session = sessionFactory.openSession();
+        Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select u from User u where u.name=:login and u.password=:password");
         query.setParameter("login", user.getName());
         query.setParameter("password", user.getPassword());
