@@ -13,4 +13,7 @@ public interface UserService extends BaseServices<User> {
     ModelAndView addNewUser(User user) throws ServiceExceptions, RepositoryExceptions;
 
     ModelAndView getProfileAccount(User user) throws ServiceExceptions, RepositoryExceptions;
+
+    ModelAndView getProfileAccountPagination(User user, int number) throws ServiceExceptions, RepositoryExceptions;
+
 }

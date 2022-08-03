@@ -17,6 +17,7 @@ import javax.validation.Valid;
 
 import java.util.Objects;
 
+import static com.example.eshop.utils.EshopConstants.ERROR;
 import static com.example.eshop.utils.EshopConstants.NAME;
 import static com.example.eshop.utils.EshopConstants.PASSWORD;
 import static com.example.eshop.utils.EshopConstants.USER;
@@ -54,7 +55,7 @@ public class RegistrationController {
 
     private void fieldError(String field, ModelAndView modelAndView, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors(field)) {
-            modelAndView.addObject(field + "Error", Objects.requireNonNull(bindingResult.getFieldError(field))
+            modelAndView.addObject(field + ERROR, Objects.requireNonNull(bindingResult.getFieldError(field))
                     .getDefaultMessage());
         }
     }

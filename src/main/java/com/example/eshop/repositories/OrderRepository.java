@@ -6,11 +6,11 @@ import com.example.eshop.exceptions.RepositoryExceptions;
 import java.util.List;
 
 public interface OrderRepository extends BaseRepository<Order> {
-    Order getOrderById(int id) throws RepositoryExceptions;
-
-    List<Integer> getAllOrdersIdsByUserId(int id) throws RepositoryExceptions;
-
     Order create(Order order) throws RepositoryExceptions;
 
-    Order getOrderByUserId(int id) throws RepositoryExceptions;
+    List<Order> getAllOrdersByUserId(int userId);
+
+    List<Order> getAllOrdersByUserIdPagination(int userId, int number);
+
+    long getNumberOfOrdersPerPage(int userId);
 }

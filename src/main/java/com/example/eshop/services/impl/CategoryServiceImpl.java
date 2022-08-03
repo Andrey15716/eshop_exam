@@ -12,11 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.eshop.utils.PagesPathEnum.CATEGORY_PAGE;
 import static com.example.eshop.utils.RequestParamsEnum.CATEGORY_PARAM;
+import static com.example.eshop.utils.RequestParamsEnum.PAGE_NUMBER_PARAM;
 
 @Slf4j
 @Service
@@ -52,13 +54,30 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ModelAndView getCategoryData(int id) throws ServiceExceptions, RepositoryExceptions {
         ModelMap modelMap = new ModelMap();
-
         Category category = categoryRepository.getCategoryById(id);
         if (Optional.ofNullable(category).isPresent()) {
             List<Product> products = productService.getAllProductsByCategoryId(category.getId());
             category.setProductList(products);
             modelMap.addAttribute(CATEGORY_PARAM.getValue(), category);
             log.info("User got categoryData by id - " + id);
+        }
+        return new ModelAndView(CATEGORY_PAGE.getPath(), modelMap);
+    }
+
+    @Override
+    public ModelAndView getCategoryDataPagination(int id, int pageNumber) throws ServiceExceptions, RepositoryExceptions {
+        ModelMap modelMap = new ModelMap();
+        Category category = categoryRepository.getCategoryById(id);
+        if (Optional.ofNullable(category).isPresent()) {
+            List<Product> products = productService.getAllProductsByCategoryIdPagination(category.getId(), pageNumber);
+            category.setProductList(products);
+            long numberPages = productService.getNumberOfProductsPerPage(id);
+            List<Long> listPages = new ArrayList<>();
+            for (long i = 1; i <= numberPages; i++) {
+                listPages.add(i);
+            }
+            modelMap.addAttribute(PAGE_NUMBER_PARAM.getValue(), listPages);
+            modelMap.addAttribute(CATEGORY_PARAM.getValue(), category);
         }
         return new ModelAndView(CATEGORY_PAGE.getPath(), modelMap);
     }

@@ -22,4 +22,9 @@ public class CategoryController {
     public ModelAndView openCategoryPage(@PathVariable int id) throws ServiceExceptions, RepositoryExceptions {
         return categoryService.getCategoryData(id);
     }
+
+    @GetMapping("/{id}/{page}")
+    public ModelAndView openCategoryPagination(@PathVariable int id, @PathVariable int page) throws ServiceExceptions, RepositoryExceptions {
+        return categoryService.getCategoryDataPagination(id, page);
+    }
 }

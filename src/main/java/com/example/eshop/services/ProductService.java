@@ -13,4 +13,9 @@ public interface ProductService extends BaseServices<Product> {
     ModelAndView getProductsBySearchRequest(String param) throws ServiceExceptions, RepositoryExceptions;
 
     ModelAndView getProductById(int id) throws ServiceExceptions, RepositoryExceptions;
+
+    List<Product> getAllProductsByCategoryIdPagination(int categoryId, int pageNumber) throws ServiceExceptions, RepositoryExceptions;
+
+    long getNumberOfProductsPerPage(int categoryId);
+
 }

@@ -24,7 +24,8 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
-    @ManyToOne
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
     @Column
     private LocalDate date;

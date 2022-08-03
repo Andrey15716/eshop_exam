@@ -10,6 +10,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
+
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -40,7 +41,7 @@ public class DemoApplication {
     public LocalSessionFactoryBean getSessionFactory(DataSource dataSource) throws Exception {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        sessionFactory.setPackagesToScan("by.teachmeskills.eshop");
+        sessionFactory.setPackagesToScan("com.example.eshop");
         Properties properties = new Properties();
         properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
         properties.put("hibernate.show_sql", env.getProperty("spring.jpa.show-sql"));

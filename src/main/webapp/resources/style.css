@@ -6,10 +6,33 @@
     margin: 2px;
 }
 
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
 .row {
-    display: table-cell;
+    display: flex;
+    flex-direction: row;
+}
+
+.pages {
+    display: flex;
+    justify-content: center;
+}
+
+.pages a {
+    margin: 0 5px;
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.table tbody td {
     vertical-align: middle;
-    text-align: center;
-    width: 800px;
-    height: 100px;
+}
+
+.btn-increase, .btn-decrease {
+    box-shadow: none;
+    font-size: 25px;
 }

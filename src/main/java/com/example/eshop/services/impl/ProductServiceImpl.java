@@ -71,4 +71,14 @@ public class ProductServiceImpl implements ProductService {
         }
         return new ModelAndView(PRODUCT_PAGE.getPath(), modelMap);
     }
+
+    @Override
+    public List<Product> getAllProductsByCategoryIdPagination(int categoryId, int pageNumber) throws ServiceExceptions, RepositoryExceptions {
+        return productRepository.getAllProductsByCategoryIdPaging(categoryId, pageNumber);
+    }
+
+    @Override
+    public long getNumberOfProductsPerPage(int categoryId) {
+        return productRepository.getNumberOfProductsPerPage(categoryId);
+    }
 }

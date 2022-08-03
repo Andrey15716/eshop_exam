@@ -2,7 +2,6 @@ package com.example.eshop.services.impl;
 
 import com.example.eshop.entities.Category;
 import com.example.eshop.entities.Order;
-import com.example.eshop.entities.Product;
 import com.example.eshop.entities.User;
 import com.example.eshop.exceptions.RepositoryExceptions;
 import com.example.eshop.exceptions.ServiceExceptions;
@@ -19,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import static com.example.eshop.utils.PagesPathEnum.PROFILE_PAGE;
 import static com.example.eshop.utils.PagesPathEnum.REGISTRATION_SUCCESS_PAGE;
 import static com.example.eshop.utils.PagesPathEnum.SIGN_IN_PAGE;
@@ -26,19 +26,18 @@ import static com.example.eshop.utils.PagesPathEnum.START_PAGE;
 import static com.example.eshop.utils.RequestParamsEnum.CATEGORIES_PARAM;
 import static com.example.eshop.utils.RequestParamsEnum.LOGGED_IN_USER_PARAM;
 import static com.example.eshop.utils.RequestParamsEnum.LOGIN_PARAM;
+import static com.example.eshop.utils.RequestParamsEnum.PAGE_NUMBER_PARAM;
 import static com.example.eshop.utils.RequestParamsEnum.USER_ORDERS_PARAM;
 
 @Slf4j
 @Repository
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final OrderRepository orderRepository;
 
-    public UserServiceImpl(UserRepository userRepository, ProductRepository productRepository, CategoryService categoryService, OrderRepository orderRepository) {
+    public UserServiceImpl(UserRepository userRepository, CategoryService categoryService, OrderRepository orderRepository) {
         this.userRepository = userRepository;
-        this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.orderRepository = orderRepository;
     }
@@ -106,18 +105,35 @@ public class UserServiceImpl implements UserService {
         modelMap.addAttribute(LOGGED_IN_USER_PARAM.getValue(), loggedInUser);
         int userId = loggedInUser.getId();
         user.setId(userId);
-        List<Order> userOrders = new ArrayList<>();
-        List<Integer> ordersIds = orderRepository.getAllOrdersIdsByUserId(userId);
-        for (Integer ordersId : ordersIds) {
-            List<Product> orderProducts = productRepository.getAllProductsByOrderId(ordersId);
-            Order order = orderRepository.getOrderById(ordersId);
-            order.setProductList(orderProducts);
-            userOrders.add(order);
-        }
+        List<Order> userOrders = orderRepository.getAllOrdersByUserId(userId);
         modelMap.addAttribute(USER_ORDERS_PARAM.getValue(), userOrders);
         modelAndView.setViewName(PROFILE_PAGE.getPath());
         modelAndView.addAllObjects(modelMap);
         log.info("User got your profile account");
+        return modelAndView;
+    }
+
+    @Override
+    public ModelAndView getProfileAccountPagination(User user, int number) throws ServiceExceptions, RepositoryExceptions {
+        User loggedInUser = userRepository.getUserByLoginAndPass(user);
+        ModelAndView modelAndView = new ModelAndView();
+        if (Optional.ofNullable(loggedInUser).isPresent()) {
+            ModelMap modelMap = new ModelMap();
+            modelMap.addAttribute(LOGGED_IN_USER_PARAM.getValue(), loggedInUser);
+            int userId = loggedInUser.getId();
+            user.setId(userId);
+            List<Order> userOrders = orderRepository.getAllOrdersByUserIdPagination(userId, number);
+            long numberPages = orderRepository.getNumberOfOrdersPerPage(userId);
+            List<Long> listPages = new ArrayList<>();
+            for (long i = 1; i <= numberPages; i++) {
+                listPages.add(i);
+            }
+            modelMap.addAttribute(PAGE_NUMBER_PARAM.getValue(), listPages);
+            modelMap.addAttribute(USER_ORDERS_PARAM.getValue(), userOrders);
+            modelAndView.setViewName(PROFILE_PAGE.getPath());
+            modelAndView.addAllObjects(modelMap);
+            log.info("User got profile account pagination");
+        }
         return modelAndView;
     }
 }
