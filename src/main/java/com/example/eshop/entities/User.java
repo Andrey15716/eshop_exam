@@ -7,12 +7,16 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,4 +37,6 @@ public class User extends BaseEntity {
     @Column(name = "date_of_birthday")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateBorn;
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Order> orders;
 }

@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -25,6 +26,6 @@ public class Category extends BaseEntity {
     private String name;
     @Column(name = "image")
     private String imageName;
-    @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Product> productList;
 }

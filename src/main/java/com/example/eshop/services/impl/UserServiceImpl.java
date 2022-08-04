@@ -3,15 +3,15 @@ package com.example.eshop.services.impl;
 import com.example.eshop.entities.Category;
 import com.example.eshop.entities.Order;
 import com.example.eshop.entities.User;
+import com.example.eshop.exceptions.AuthorizationsExceptions;
 import com.example.eshop.exceptions.RepositoryExceptions;
 import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.repositories.OrderRepository;
-import com.example.eshop.repositories.ProductRepository;
 import com.example.eshop.repositories.UserRepository;
 import com.example.eshop.services.CategoryService;
 import com.example.eshop.services.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import static com.example.eshop.utils.PagesPathEnum.PROFILE_PAGE;
 import static com.example.eshop.utils.PagesPathEnum.REGISTRATION_SUCCESS_PAGE;
-import static com.example.eshop.utils.PagesPathEnum.SIGN_IN_PAGE;
 import static com.example.eshop.utils.PagesPathEnum.START_PAGE;
 import static com.example.eshop.utils.RequestParamsEnum.CATEGORIES_PARAM;
 import static com.example.eshop.utils.RequestParamsEnum.LOGGED_IN_USER_PARAM;
@@ -30,7 +29,7 @@ import static com.example.eshop.utils.RequestParamsEnum.PAGE_NUMBER_PARAM;
 import static com.example.eshop.utils.RequestParamsEnum.USER_ORDERS_PARAM;
 
 @Slf4j
-@Repository
+@Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CategoryService categoryService;
@@ -63,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView authenticate(User user) throws ServiceExceptions, RepositoryExceptions {
+    public ModelAndView authenticate(User user) throws ServiceExceptions, RepositoryExceptions, AuthorizationsExceptions {
         ModelAndView modelAndView = new ModelAndView();
         if (Optional.ofNullable(user).isPresent()
                 && Optional.ofNullable(user.getName()).isPresent()
@@ -77,8 +76,8 @@ public class UserServiceImpl implements UserService {
                 modelAndView.addAllObjects(modelMap);
                 log.info("User is authenticated!");
             } else {
-                modelAndView.setViewName(SIGN_IN_PAGE.getPath());
                 log.info("User is not found!");
+                throw new AuthorizationsExceptions("User is not authorised!");
             }
         }
         return modelAndView;

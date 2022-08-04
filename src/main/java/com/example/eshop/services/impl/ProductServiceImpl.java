@@ -6,7 +6,7 @@ import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.repositories.ProductRepository;
 import com.example.eshop.services.ProductService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,7 +19,7 @@ import static com.example.eshop.utils.RequestParamsEnum.PRODUCT_PARAM;
 import static com.example.eshop.utils.RequestParamsEnum.SEARCH_RESULT_PARAM;
 
 @Slf4j
-@Repository
+@Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
