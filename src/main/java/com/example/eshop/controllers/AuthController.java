@@ -51,11 +51,6 @@ public class AuthController {
         return userService.authenticate(user);
     }
 
-//    @GetMapping("/profile")
-//    public ModelAndView getProfilePage(@ModelAttribute(USER) User user) throws ServiceExceptions, RepositoryExceptions {
-//        return userService.getProfileAccount(user);
-//    }
-
     @GetMapping("/profile/{number}")
     public ModelAndView getProfilePagePagination(@ModelAttribute(USER) User user, @PathVariable int number) throws ServiceExceptions, RepositoryExceptions {
         return userService.getProfileAccountPagination(user, number);

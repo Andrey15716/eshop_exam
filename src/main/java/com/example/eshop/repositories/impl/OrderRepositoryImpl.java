@@ -21,39 +21,16 @@ import static com.example.eshop.utils.EshopConstants.PAGE_SIZE;
 public class OrderRepositoryImpl implements OrderRepository {
     @PersistenceContext
     private EntityManager entityManager;
-//    private final SessionFactory sessionFactory;
-
-//    public OrderRepositoryImpl(SessionFactory sessionFactory) {
-//        this.sessionFactory = sessionFactory;
-//    }
 
     @Override
     public Order create(Order entity) throws RepositoryExceptions {
         entityManager.persist(entity);
         return entity;
-//        Transaction transaction = null;
-//        try (Session session = sessionFactory.openSession()) {
-//            transaction = session.beginTransaction();
-//            session.save(entity);
-//            transaction.commit();
-//            session.close();
-//        } catch (Exception e) {
-//            if (transaction != null) {
-//                transaction.rollback();
-//            }
-//            System.out.println(e.getMessage());
-//        }
-//        return entity;
     }
 
     @Override
     public List<Order> read() throws RepositoryExceptions {
         return entityManager.createQuery("select o from Order o").getResultList();
-//        List<Order> orders;
-//        try (Session session = sessionFactory.getCurrentSession()) {
-//            orders = session.createQuery("from Order").list();
-//        }
-//        return orders;
     }
 
     @Override
@@ -63,38 +40,12 @@ public class OrderRepositoryImpl implements OrderRepository {
         order.setId(entity.getId());
         entityManager.persist(order);
         return order;
-//        Transaction transaction;
-//        Order order = null;
-//        try (Session session = sessionFactory.openSession()) {
-//            transaction = session.beginTransaction();
-//            order = session.get(Order.class, entity.getId());
-//            order.setPriceOrder(entity.getPriceOrder());
-//            order.setId(entity.getId());
-//            transaction.commit();
-//            session.close();
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return order;
     }
 
     @Override
     public void delete(int id) throws RepositoryExceptions {
         Order order = entityManager.find(Order.class, id);
         entityManager.remove(order);
-//        Transaction transaction = null;
-//        try (Session session = sessionFactory.openSession()) {
-//            transaction = session.beginTransaction();
-//            Order order = session.get(Order.class, id);
-//            session.delete(order);
-//            transaction.commit();
-//            session.close();
-//        } catch (Exception e) {
-//            if (transaction != null) {
-//                transaction.rollback();
-//            }
-//            System.out.println(e.getMessage());
-//        }
     }
 
     @Override
@@ -102,11 +53,6 @@ public class OrderRepositoryImpl implements OrderRepository {
         Query query = entityManager.createQuery("select o from Order o where o.user.id=:id order by o.id desc");
         query.setParameter(ID, userId);
         return query.getResultList();
-
-//        Session session = sessionFactory.getCurrentSession();
-//        Query<Order> query = session.createQuery("select o from Order o where o.user.id=:id order by o.id desc");
-//        query.setParameter(ID, userId);
-//        return query.list();
     }
 
     @Override
@@ -122,18 +68,6 @@ public class OrderRepositoryImpl implements OrderRepository {
         query.setFirstResult(firstResult);
         query.setMaxResults(PAGE_SIZE);
         return query.getResultList();
-//        Session session = sessionFactory.getCurrentSession();
-//        Query<Order> query = session.createQuery("select o from Order o where o.user.id=:id order by o.id desc");
-//        int firstResult;
-//        if (number > 1) {
-//            firstResult = (number - 1) * PAGE_SIZE;
-//        } else {
-//            firstResult = 0;
-//        }
-//        query.setParameter(ID, userId);
-//        query.setFirstResult(firstResult);
-//        query.setMaxResults(PAGE_SIZE);
-//        return query.list();
     }
 
     @Override
@@ -146,13 +80,4 @@ public class OrderRepositoryImpl implements OrderRepository {
         }
         return resultQuery / ORDER_PAGE_SIZE;
     }
-//        Session session = sessionFactory.getCurrentSession();
-//        Query<Long> query = session.createQuery("select count(o) from Order o where o.user.id=:id");
-//        query.setParameter(ID, userId);
-//        long resultQuery = query.getSingleResult();
-//        if (resultQuery % ORDER_PAGE_SIZE != 0) {
-//            return query.getSingleResult() / ORDER_PAGE_SIZE + 1;
-//        }
-//        return query.getSingleResult() / ORDER_PAGE_SIZE;
-//    }
 }
