@@ -5,7 +5,6 @@
     <title>Profile</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/button_style.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
@@ -27,7 +26,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="${contextPath}/login/profile">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="${contextPath}/login/profile/1">Profile</a></li>
                 <li class="nav-item"><a class="nav-link" href="${contextPath}/search">Search</a></li>
             </ul>
         </div>
@@ -36,12 +35,13 @@
 <div class="container-fluid">
     <div class=" row">
         <p align="left" style="font-size: 22px">Наши товары</p>
-        <div class="card w-25 m-1" type="product">
+        <div class="card w-25 m-1">
             <div class="card-body">
                 <ul class="list-group-list-group-flush">
                     <li class="list-group-item"><b>Имя:</b> <a>${loggedInUser.getName()}</a></li>
                     <li class="list-group-item"><b>Фамилия:</b> <a>${loggedInUser.getSurname()}</a></li>
                     <li class="list-group-item"><b>День рождения:</b> <a>${loggedInUser.getDateBorn()}</a></li>
+                    <li class="list-group-item"><b>ID пользователя:</b> <a>${loggedInUser.getId()}</a></li>
                 </ul>
             </div>
         </div>
@@ -55,8 +55,7 @@
         <c:forEach items="${userOrders}" var="userOrder">
             <div class="order">
                 <div class="order-info">
-                    <p>Покупатель:<b> ${userOrder.getId()}</b></p>
-                    <p>Дата:<b> ${userOrder.getDate()}</b></p>
+                    <p>Дата заказа:<b> ${userOrder.getDate()}</b></p>
                 </div>
                 <div class="row order-list">
                     <c:forEach items="${userOrder.getProductList()}" var="products">
@@ -73,6 +72,11 @@
                 </div>
             </div>
         </c:forEach>
+        <div class="pages">
+            <c:forEach items="${page_number}" var="page">
+                <a href="${contextPath}/login/profile/${page}">${page}</a>
+            </c:forEach>
+        </div>
     </c:if>
 </div>
 </body>

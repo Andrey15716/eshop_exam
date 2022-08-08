@@ -2,6 +2,8 @@ package com.example.eshop.controllers;
 
 import com.example.eshop.entities.Category;
 import com.example.eshop.entities.User;
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.services.CategoryService;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +28,7 @@ public class HomeController {
     }
 
     @GetMapping()
-    public ModelAndView getHomePage(@SessionAttribute(USER) User user) {
+    public ModelAndView getHomePage(@SessionAttribute(USER) User user) throws ServiceExceptions, RepositoryExceptions {
         ModelMap model = new ModelMap();
         List<Category> categoriesList = categoryService.read();
         model.addAttribute(CATEGORIES_PARAM.getValue(), categoriesList);

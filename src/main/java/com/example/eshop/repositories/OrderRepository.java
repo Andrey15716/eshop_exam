@@ -1,15 +1,16 @@
 package com.example.eshop.repositories;
 
 import com.example.eshop.entities.Order;
+import com.example.eshop.exceptions.RepositoryExceptions;
 
 import java.util.List;
 
 public interface OrderRepository extends BaseRepository<Order> {
-    Order getOrderById(int id);
+    Order create(Order order) throws RepositoryExceptions;
 
-    List<Integer> getAllOrdersIdsByUserId(int id);
+    List<Order> getAllOrdersByUserId(int userId);
 
-    Order create(Order order);
+    List<Order> getAllOrdersByUserIdPagination(int userId, int number);
 
-    Order getOrderByUserId(int id);
+    long getNumberOfOrdersPerPage(int userId);
 }

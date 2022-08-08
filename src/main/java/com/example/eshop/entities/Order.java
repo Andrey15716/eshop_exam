@@ -1,32 +1,39 @@
 package com.example.eshop.entities;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "orders")
 public class Order extends BaseEntity {
-    private int userId;
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+    @Column
     private LocalDate date;
+    @Column(name = "price")
     private int priceOrder;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "order_product", joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
     private List<Product> productList;
-
-    public Order(int id, int userId, LocalDate date, int priceOrder) {
-        super(id);
-        this.userId = userId;
-        this.date = date;
-        this.priceOrder = priceOrder;
-    }
-
-    public Order(int userId, LocalDate date, int priceOrder, List<Product> productList) {
-        this.userId = userId;
-        this.date = date;
-        this.priceOrder = priceOrder;
-        this.productList = productList;
-    }
 }

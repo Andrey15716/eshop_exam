@@ -1,15 +1,19 @@
 package com.example.eshop.repositories;
 
 import com.example.eshop.entities.Product;
+import com.example.eshop.exceptions.RepositoryExceptions;
 
+import javax.persistence.Query;
 import java.util.List;
 
 public interface ProductRepository extends BaseRepository<Product> {
-    List<Product> getAllProductsByCategoryId(int categoryId);
+    List<Product> getAllProductsByCategoryId(int categoryId) throws RepositoryExceptions;
 
-    List<Product> getAllProductsByOrderId(int id);
+    List<Product> getProductsBySearchRequest(String param) throws RepositoryExceptions;
 
-    List<Product> getProductsBySearchRequest(String param);
+    Product getProductById(int id) throws RepositoryExceptions;
 
-    Product getProductById(int id);
+    long getNumberOfProductsPerPage(int categoryId);
+
+    List<Product> getAllProductsByCategoryIdPaging(int categoryId, int pageReq);
 }

@@ -11,6 +11,7 @@ public enum RequestParamsEnum {
     PRICE_ORDER_PARAM("priceOrder"),
     USER_ORDERS_PARAM("userOrders"),
     SEARCH_RESULT_PARAM("search_result"),
+    PAGE_NUMBER_PARAM("page_number"),
     ERROR_PARAM("error");
 
     private final String value;

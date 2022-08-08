@@ -1,88 +1,83 @@
 package com.example.eshop.repositories.impl;
 
 import com.example.eshop.entities.Order;
-import com.example.eshop.entities.Product;
+import com.example.eshop.exceptions.RepositoryExceptions;
 import com.example.eshop.repositories.OrderRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.util.List;
 
-@Slf4j
-@Repository
-public class OrderRepositoryImpl implements OrderRepository {
-    private final JdbcTemplate jdbcTemplate;
-    private static final String INSERT_NEW_ORDER = "INSERT INTO eshop2.orders (price,date,user_id) VALUES (?,?,?)";
-    private static final String INSERT_NEW_ORDER_PRODUCT = "INSERT INTO eshop2.order_product (product_id,order_id) VALUES (?,?)";
-    private static final String GET_ALL_ORDERS_BY_USER_ID = "SELECT * FROM eshop2.orders WHERE user_id=?";
-    private static final String GET_ALL_ORDERS = "SELECT * FROM eshop2.orders";
-    private static final String UPDATE_ORDER = "UPDATE eshop2.orders SET price=? WHERE order_id=?";
-    private static final String DELETE_ORDER = "DELETE FROM eshop2.orders WHERE order_id=?";
-    private static final String GET_ORDER_BY_USER_ID = "SELECT * FROM eshop2.orders WHERE user_id=?";
-    private static final String GET_ORDER_BY_ORDER_ID = "SELECT * FROM eshop2.orders WHERE order_id=?";
+import static com.example.eshop.utils.EshopConstants.ID;
+import static com.example.eshop.utils.EshopConstants.ORDER_PAGE_SIZE;
+import static com.example.eshop.utils.EshopConstants.PAGE_SIZE;
 
-    public OrderRepositoryImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+@Repository
+@Transactional
+public class OrderRepositoryImpl implements OrderRepository {
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public Order create(Order entity) {
-        jdbcTemplate.update(INSERT_NEW_ORDER, entity.getPriceOrder(), Date.valueOf(entity.getDate()), entity.getUserId());
-        Order order = getOrderByUserId(entity.getUserId());
-        List<Product> productsInOrder = entity.getProductList();
-        for (Product product : productsInOrder) {
-            jdbcTemplate.update(INSERT_NEW_ORDER_PRODUCT, product.getId(), order.getId());
-            log.info("User with id " + entity.getUserId() + " created order with id " + order.getId());
-        }
+    public Order create(Order entity) throws RepositoryExceptions {
+        entityManager.persist(entity);
         return entity;
     }
 
     @Override
-    public List<Order> read() {
-        return jdbcTemplate.query(GET_ALL_ORDERS, (rs, rowNum) -> Order.builder()
-                .id(rs.getInt("order_id"))
-                .priceOrder(rs.getInt("price"))
-                .date(rs.getDate("date").toLocalDate())
-                .userId(rs.getInt("user_id"))
-                .build());
+    public List<Order> read() throws RepositoryExceptions {
+        return entityManager.createQuery("select o from Order o").getResultList();
     }
 
     @Override
-    public Order update(Order entity) {
-        jdbcTemplate.update(UPDATE_ORDER, entity.getPriceOrder(), entity.getId());
-        return getOrderById(entity.getId());
+    public Order update(Order entity) throws RepositoryExceptions {
+        Order order = entityManager.find(Order.class, entity.getId());
+        order.setPriceOrder(entity.getPriceOrder());
+        order.setId(entity.getId());
+        entityManager.persist(order);
+        return order;
     }
 
     @Override
-    public void delete(int id) {
-        jdbcTemplate.update(DELETE_ORDER, id);
+    public void delete(int id) throws RepositoryExceptions {
+        Order order = entityManager.find(Order.class, id);
+        entityManager.remove(order);
     }
 
     @Override
-    public List<Integer> getAllOrdersIdsByUserId(int id) {
-        return jdbcTemplate.query(GET_ALL_ORDERS_BY_USER_ID, (rs, rowNum) ->
-                rs.getInt("order_id"), id);
+    public List<Order> getAllOrdersByUserId(int userId) {
+        Query query = entityManager.createQuery("select o from Order o where o.user.id=:id order by o.id desc");
+        query.setParameter(ID, userId);
+        return query.getResultList();
     }
 
     @Override
-    public Order getOrderByUserId(int id) {
-        return jdbcTemplate.queryForObject(GET_ORDER_BY_USER_ID, (RowMapper<Order>) (rs, rowNum) -> Order.builder()
-                .id(rs.getInt("order_id"))
-                .priceOrder(rs.getInt("price"))
-                .date(rs.getDate("date").toLocalDate())
-                .userId(rs.getInt("user_id"))
-                .build(), id);
+    public List<Order> getAllOrdersByUserIdPagination(int userId, int number) {
+        Query query = entityManager.createQuery("select o from Order o where o.user.id=:id order by o.id desc");
+        int firstResult;
+        if (number > 1) {
+            firstResult = (number - 1) * PAGE_SIZE;
+        } else {
+            firstResult = 0;
+        }
+        query.setParameter(ID, userId);
+        query.setFirstResult(firstResult);
+        query.setMaxResults(PAGE_SIZE);
+        return query.getResultList();
     }
 
-    public Order getOrderById(int id) {
-        return jdbcTemplate.queryForObject(GET_ORDER_BY_ORDER_ID, (RowMapper<Order>) (rs, rowNum) -> Order.builder()
-                .id(rs.getInt("order_id"))
-                .priceOrder(rs.getInt("price"))
-                .date(rs.getDate("date").toLocalDate())
-                .userId(rs.getInt("user_id"))
-                .build(), id);
+    @Override
+    public long getNumberOfOrdersPerPage(int userId) {
+        Query query = entityManager.createQuery("select count(o) from Order o where o.user.id=:id");
+        query.setParameter(ID, userId);
+        long resultQuery = (long) query.getSingleResult();
+        if (resultQuery % ORDER_PAGE_SIZE != 0) {
+            return resultQuery / ORDER_PAGE_SIZE + 1;
+        }
+        return resultQuery / ORDER_PAGE_SIZE;
     }
 }

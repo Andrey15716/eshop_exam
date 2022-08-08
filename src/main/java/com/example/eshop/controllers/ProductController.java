@@ -1,5 +1,7 @@
 package com.example.eshop.controllers;
 
+import com.example.eshop.exceptions.RepositoryExceptions;
+import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.services.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +19,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView openProductPage(@PathVariable int id) {
+    public ModelAndView openProductPage(@PathVariable int id) throws ServiceExceptions, RepositoryExceptions {
         return productService.getProductById(id);
     }
 }
