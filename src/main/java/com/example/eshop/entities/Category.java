@@ -26,6 +26,6 @@ public class Category extends BaseEntity {
     private String name;
     @Column(name = "image")
     private String imageName;
-    @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Product> productList;
 }

@@ -10,11 +10,15 @@ import com.example.eshop.repositories.OrderRepository;
 import com.example.eshop.repositories.UserRepository;
 import com.example.eshop.services.CategoryService;
 import com.example.eshop.services.UserService;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -134,5 +138,31 @@ public class UserServiceImpl implements UserService {
             log.info("User got profile account pagination");
         }
         return modelAndView;
+    }
+
+    @Override
+    public void downloadCsvFile(Writer writer) throws RepositoryExceptions {
+        List<User> users = userRepository.read();
+        try {
+            StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer)
+                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+                    .build();
+            beanToCsv.write(users);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public void downloadOrderCsvFile(Writer writer, int id) {
+        List<Order> order = orderRepository.getAllOrdersByUserId(id);
+        try {
+            StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer)
+                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+                    .build();
+            beanToCsv.write(order);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 }
