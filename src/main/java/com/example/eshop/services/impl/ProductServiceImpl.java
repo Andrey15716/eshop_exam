@@ -5,11 +5,20 @@ import com.example.eshop.exceptions.RepositoryExceptions;
 import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.repositories.ProductRepository;
 import com.example.eshop.services.ProductService;
+import com.example.eshop.utils.Assertions;
+import com.example.eshop.utils.CsvParser;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,5 +89,34 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long getNumberOfProductsPerPage(int categoryId) {
         return productRepository.getNumberOfProductsPerPage(categoryId);
+    }
+
+    @Override
+    public void downloadCsvFile(Writer writer) throws RepositoryExceptions, ServiceExceptions {
+        List<Product> products = productRepository.read();
+        try {
+            StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(writer)
+                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+                    .build();
+            beanToCsv.write(products);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Product> saveProductsFromCsvFile(InputStream inputStream) throws IOException {
+        Assertions.assertNonNull(inputStream, "CSV parser not provided");
+        List<Product> productsParserCsv = CsvParser.productsParserCsv(inputStream);
+        if (Optional.ofNullable(productsParserCsv).isPresent()) {
+            productsParserCsv.forEach(entity -> {
+                try {
+                    productRepository.create(entity);
+                } catch (RepositoryExceptions e) {
+                    log.error("Entity from category parser csv was not saved");
+                }
+            });
+        }
+        return Collections.emptyList();
     }
 }

@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Objects;
 
 import static com.example.eshop.utils.EshopConstants.ERROR;
@@ -54,6 +57,22 @@ public class AuthController {
     @GetMapping("/profile/{number}")
     public ModelAndView getProfilePagePagination(@ModelAttribute(USER) User user, @PathVariable int number) throws ServiceExceptions, RepositoryExceptions {
         return userService.getProfileAccountPagination(user, number);
+    }
+
+    @GetMapping("/download")
+    public void downloadProductsCsv(HttpServletResponse response) throws IOException, RepositoryExceptions, ServiceExceptions {
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF8");
+        response.addHeader("Content-Disposition", "attachment; filename=category.csv");
+        userService.downloadCsvFile(response.getWriter());
+    }
+
+    @GetMapping("/order/download")
+    public void downloadOrderCsv(HttpServletResponse response, @RequestParam("user_id") int id) throws IOException, RepositoryExceptions, ServiceExceptions {
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF8");
+        response.addHeader("Content-Disposition", "attachment; filename=category.csv");
+        userService.downloadOrderCsvFile(response.getWriter(), id);
     }
 
     @ModelAttribute(USER)
