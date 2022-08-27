@@ -29,12 +29,14 @@ public class CartController {
     }
 
     @GetMapping("/add")
-    public ModelAndView addProductToCart(@RequestParam(PRODUCT_ID_PARAM) int productId, @ModelAttribute(SHOPPING_CART) Cart shopCart) throws ServiceExceptions, RepositoryExceptions {
+    public ModelAndView addProductToCart(@RequestParam(PRODUCT_ID_PARAM) int productId,
+                                         @ModelAttribute(SHOPPING_CART) Cart shopCart) throws RepositoryExceptions {
         return cartService.addProductToCart(productId, shopCart);
     }
 
     @GetMapping("/buy")
-    public ModelAndView buyProduct(@ModelAttribute(SHOPPING_CART) Cart shopCart, @SessionAttribute(USER) User user) throws ServiceExceptions, RepositoryExceptions {
+    public ModelAndView buyProduct(@ModelAttribute(SHOPPING_CART) Cart shopCart,
+                                   @SessionAttribute(USER) User user) throws RepositoryExceptions {
         return cartService.buyProduct(shopCart, user);
     }
 

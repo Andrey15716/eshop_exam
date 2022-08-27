@@ -12,6 +12,12 @@ public enum RequestParamsEnum {
     USER_ORDERS_PARAM("userOrders"),
     SEARCH_RESULT_PARAM("search_result"),
     PAGE_NUMBER_PARAM("page_number"),
+    NUMBER_OF_PAGES("numberOfPages"),
+    IS_FIRST_PAGE("isFirst"),
+    IS_LAST_PAGE("isLast"),
+    PAGE_NUMBER("pageNumber"),
+    PAGE_SIZE("pageSize"),
+    USER_ORDERS("userOrders"),
     ERROR_PARAM("error");
 
     private final String value;

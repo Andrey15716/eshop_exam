@@ -2,18 +2,15 @@ package com.example.eshop.repositories;
 
 import com.example.eshop.entities.Product;
 import com.example.eshop.exceptions.RepositoryExceptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import javax.persistence.Query;
-import java.util.List;
-
-public interface ProductRepository extends BaseRepository<Product> {
-    List<Product> getAllProductsByCategoryId(int categoryId) throws RepositoryExceptions;
-
-    List<Product> getProductsBySearchRequest(String param) throws RepositoryExceptions;
-
+public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
     Product getProductById(int id) throws RepositoryExceptions;
 
-    long getNumberOfProductsPerPage(int categoryId);
+    Page<Product> findAllByCategoryId(int categoryId, Pageable pageable);
 
-    List<Product> getAllProductsByCategoryIdPaging(int categoryId, int pageReq);
+    void deleteProductById(int id);
 }

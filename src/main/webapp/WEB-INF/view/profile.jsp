@@ -26,12 +26,25 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="${contextPath}/login/profile/1">Profile</a></li>
+                <li class="nav-item"><a class="nav-link"
+                                        href="${contextPath}/login/profile?pageNumber=${pageNumber+1}&pageSize=${pageSize}">Profile</a>
+                </li>
                 <li class="nav-item"><a class="nav-link" href="${contextPath}/search">Search</a></li>
             </ul>
         </div>
     </div>
 </nav>
+
+<div class="dropdown">
+    <select onchange="location=value" id="pageSize" name="pageSize">
+        <option>Выбрать количество продуктов на странице</option>
+        <option value="${contextPath}/login/profile?pageNumber=0&pageSize=5">5</option>
+        <option value="${contextPath}/login/profile?pageNumber=0&pageSize=10">10</option>
+        <option value="${contextPath}/login/profile?pageNumber=0&pageSize=15">15</option>
+    </select>
+    ${pageSize}
+</div>
+
 <div class="container-fluid">
     <div class=" row">
         <p align="left" style="font-size: 22px">Наши товары</p>
@@ -72,11 +85,48 @@
                 </div>
             </div>
         </c:forEach>
+
         <div class="pages">
-            <c:forEach items="${page_number}" var="page">
-                <a href="${contextPath}/login/profile/${page}">${page}</a>
-            </c:forEach>
+            <c:if test="${not empty numberOfPages}">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <c:if test="${isFirst}">
+                            <li class="page-item disabled">
+                                <a class="page-link" tabindex="-1">Previous</a>
+                            </li>
+                        </c:if>
+                        <c:if test="${not isFirst}">
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="${contextPath}/login/profile?pageNumber=${pageNumber-1}&pageSize=${pageSize}"
+                                   tabindex="-1">Previous</a>
+                            </li>
+                        </c:if>
+                        <c:forEach begin="0" end="${numberOfPages-1}" var="pageNumber">
+                            <li class="page-item"><a class="page-link active"
+                                                     href="${contextPath}/login/profile?pageNumber=${pageNumber}&pageSize=${pageSize}">${pageNumber+1}</a>
+                            </li>
+                            <span class="sr-only">(current)</span>
+                            </span>
+                        </c:forEach>
+                        <li class="page-item">
+                            <c:if test="${isLast}">
+                        <li class="page-item disabled">
+                            <a class="page-link">Next</a>
+                        </li>
+                        </c:if>
+                        <c:if test="${not isLast}">
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="${contextPath}/login/profile?pageNumber=${pageNumber+1}&pageSize=${pageSize}">
+                                    Next</a>
+                            </li>
+                        </c:if>
+                    </ul>
+                </nav>
+            </c:if>
         </div>
+
     </c:if>
 </div>
 </body>

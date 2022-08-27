@@ -1,16 +1,10 @@
 package com.example.eshop.repositories;
 
 import com.example.eshop.entities.Order;
-import com.example.eshop.exceptions.RepositoryExceptions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
-public interface OrderRepository extends BaseRepository<Order> {
-    Order create(Order order) throws RepositoryExceptions;
-
-    List<Order> getAllOrdersByUserId(int userId);
-
-    List<Order> getAllOrdersByUserIdPagination(int userId, int number);
-
-    long getNumberOfOrdersPerPage(int userId);
+public interface OrderRepository extends JpaRepository<Order, Integer> {
+    Page<Order> getOrdersByUserId(int userId, Pageable pageable);
 }

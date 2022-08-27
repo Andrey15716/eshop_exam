@@ -2,11 +2,10 @@ package com.example.eshop.repositories;
 
 import com.example.eshop.entities.User;
 import com.example.eshop.exceptions.RepositoryExceptions;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+public interface UserRepository extends JpaRepository<User, Integer> {
+    User getUserByNameAndPassword(String name, String password) throws RepositoryExceptions;
 
-public interface UserRepository extends BaseRepository<User> {
-    User getUserByLoginAndPass(User user) throws RepositoryExceptions;
-
-    User addUser(User user) throws RepositoryExceptions;
+    void deleteUserById(int id);
 }

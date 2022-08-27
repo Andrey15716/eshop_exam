@@ -8,9 +8,9 @@ import com.example.eshop.services.UserService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,7 +41,8 @@ public class AuthController {
     }
 
     @PostMapping
-    public ModelAndView authenticate(@ModelAttribute(USER) @Valid User user, BindingResult bindingResult, ModelAndView modelAndView) throws AuthorizationsExceptions, ServiceExceptions, RepositoryExceptions {
+    public ModelAndView authenticate(@ModelAttribute(USER) @Valid User user,
+                                     BindingResult bindingResult, ModelAndView modelAndView) throws AuthorizationsExceptions, ServiceExceptions, RepositoryExceptions {
         if (bindingResult.hasErrors()) {
             fieldError(NAME, modelAndView, bindingResult);
             fieldError(PASSWORD, modelAndView, bindingResult);
@@ -51,9 +52,11 @@ public class AuthController {
         return userService.authenticate(user);
     }
 
-    @GetMapping("/profile/{number}")
-    public ModelAndView getProfilePagePagination(@ModelAttribute(USER) User user, @PathVariable int number) throws ServiceExceptions, RepositoryExceptions {
-        return userService.getProfileAccountPagination(user, number);
+    @GetMapping("/profile")
+    public ModelAndView getProfileData(@ModelAttribute(USER) User user,
+                                       @RequestParam(defaultValue = "0") int pageNumber,
+                                       @RequestParam(defaultValue = "5") int pageSize) throws ServiceExceptions, RepositoryExceptions {
+        return userService.getProfileAccount(user, pageNumber, pageSize);
     }
 
     @ModelAttribute(USER)
@@ -63,8 +66,9 @@ public class AuthController {
 
     private void fieldError(String field, ModelAndView modelAndView, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors(field)) {
-            modelAndView.addObject(field + ERROR, Objects.requireNonNull(bindingResult.getFieldError(field))
-                    .getDefaultMessage());
+            modelAndView.addObject(field + ERROR,
+                    Objects.requireNonNull(bindingResult.getFieldError(field))
+                            .getDefaultMessage());
         }
     }
 }

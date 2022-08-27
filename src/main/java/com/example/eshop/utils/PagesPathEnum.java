@@ -9,6 +9,7 @@ public enum PagesPathEnum {
     PROFILE_PAGE("profile"),
     REGISTRATION_PAGE("registration"),
     SEARCH_PAGE("search"),
+    HOME_PAGE("home"),
     ORDER_PAGE("orders"),
     REGISTRATION_SUCCESS_PAGE("registration_success"),
     ERROR_PAGE("error");
