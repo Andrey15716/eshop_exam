@@ -11,11 +11,14 @@ import com.example.eshop.repositories.UserRepository;
 import com.example.eshop.services.CategoryService;
 import com.example.eshop.services.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,10 +26,14 @@ import static com.example.eshop.utils.PagesPathEnum.PROFILE_PAGE;
 import static com.example.eshop.utils.PagesPathEnum.REGISTRATION_SUCCESS_PAGE;
 import static com.example.eshop.utils.PagesPathEnum.START_PAGE;
 import static com.example.eshop.utils.RequestParamsEnum.CATEGORIES_PARAM;
+import static com.example.eshop.utils.RequestParamsEnum.IS_FIRST_PAGE;
+import static com.example.eshop.utils.RequestParamsEnum.IS_LAST_PAGE;
 import static com.example.eshop.utils.RequestParamsEnum.LOGGED_IN_USER_PARAM;
 import static com.example.eshop.utils.RequestParamsEnum.LOGIN_PARAM;
-import static com.example.eshop.utils.RequestParamsEnum.PAGE_NUMBER_PARAM;
-import static com.example.eshop.utils.RequestParamsEnum.USER_ORDERS_PARAM;
+import static com.example.eshop.utils.RequestParamsEnum.NUMBER_OF_PAGES;
+import static com.example.eshop.utils.RequestParamsEnum.PAGE_NUMBER;
+import static com.example.eshop.utils.RequestParamsEnum.PAGE_SIZE;
+import static com.example.eshop.utils.RequestParamsEnum.USER_ORDERS;
 
 @Slf4j
 @Service
@@ -43,22 +50,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User entity) throws ServiceExceptions, RepositoryExceptions {
-        return userRepository.addUser(entity);
+        return userRepository.save(entity);
     }
 
     @Override
-    public List<User> read() throws ServiceExceptions, RepositoryExceptions {
-        return userRepository.read();
+    public List<User> read() {
+        return userRepository.findAll();
     }
 
     @Override
-    public User update(User entity) throws ServiceExceptions, RepositoryExceptions {
-        return userRepository.update(entity);
+    public User update(User entity) {
+        return userRepository.save(entity);
     }
 
     @Override
-    public void delete(int id) throws ServiceExceptions, RepositoryExceptions {
-        userRepository.delete(id);
+    public void delete(int id) {
+        userRepository.deleteUserById(id);
     }
 
     @Override
@@ -67,7 +74,7 @@ public class UserServiceImpl implements UserService {
         if (Optional.ofNullable(user).isPresent()
                 && Optional.ofNullable(user.getName()).isPresent()
                 && Optional.ofNullable(user.getPassword()).isPresent()) {
-            User loggedUser = userRepository.getUserByLoginAndPass(user);
+            User loggedUser = userRepository.getUserByNameAndPassword(user.getName(), user.getPassword());
             if (Optional.ofNullable(loggedUser).isPresent()) {
                 ModelMap modelMap = new ModelMap();
                 List<Category> categoriesList = categoryService.read();
@@ -97,42 +104,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ModelAndView getProfileAccount(User user) throws ServiceExceptions, RepositoryExceptions {
+    public ModelAndView getProfileAccount(User user, int pageNumber, int pageSize) throws ServiceExceptions, RepositoryExceptions {
         ModelAndView modelAndView = new ModelAndView();
-        User loggedInUser = userRepository.getUserByLoginAndPass(user);
         ModelMap modelMap = new ModelMap();
+        User loggedInUser = userRepository.getUserByNameAndPassword(user.getName(), user.getPassword());
         modelMap.addAttribute(LOGGED_IN_USER_PARAM.getValue(), loggedInUser);
-        int userId = loggedInUser.getId();
-        user.setId(userId);
-        List<Order> userOrders = orderRepository.getAllOrdersByUserId(userId);
-        modelMap.addAttribute(USER_ORDERS_PARAM.getValue(), userOrders);
+        Pageable paging = PageRequest.of(pageNumber, pageSize, Sort.by("id").descending());
+        Page<Order> userOrders = orderRepository.getOrdersByUserId(loggedInUser.getId(), paging);
+        modelMap.addAttribute(NUMBER_OF_PAGES.getValue(), userOrders.getTotalPages());
+        modelMap.addAttribute(USER_ORDERS.getValue(), userOrders.getContent());
+        modelMap.addAttribute(PAGE_SIZE.getValue(), pageSize);
+        modelMap.addAttribute(IS_FIRST_PAGE.getValue(), userOrders.isFirst());
+        modelMap.addAttribute(PAGE_NUMBER.getValue(), pageNumber);
+        modelMap.addAttribute(IS_LAST_PAGE.getValue(), userOrders.isLast());
         modelAndView.setViewName(PROFILE_PAGE.getPath());
         modelAndView.addAllObjects(modelMap);
-        log.info("User got your profile account");
-        return modelAndView;
-    }
-
-    @Override
-    public ModelAndView getProfileAccountPagination(User user, int number) throws ServiceExceptions, RepositoryExceptions {
-        User loggedInUser = userRepository.getUserByLoginAndPass(user);
-        ModelAndView modelAndView = new ModelAndView();
-        if (Optional.ofNullable(loggedInUser).isPresent()) {
-            ModelMap modelMap = new ModelMap();
-            modelMap.addAttribute(LOGGED_IN_USER_PARAM.getValue(), loggedInUser);
-            int userId = loggedInUser.getId();
-            user.setId(userId);
-            List<Order> userOrders = orderRepository.getAllOrdersByUserIdPagination(userId, number);
-            long numberPages = orderRepository.getNumberOfOrdersPerPage(userId);
-            List<Long> listPages = new ArrayList<>();
-            for (long i = 1; i <= numberPages; i++) {
-                listPages.add(i);
-            }
-            modelMap.addAttribute(PAGE_NUMBER_PARAM.getValue(), listPages);
-            modelMap.addAttribute(USER_ORDERS_PARAM.getValue(), userOrders);
-            modelAndView.setViewName(PROFILE_PAGE.getPath());
-            modelAndView.addAllObjects(modelMap);
-            log.info("User got profile account pagination");
-        }
+        log.info("Profile page has been selected");
         return modelAndView;
     }
 }

@@ -6,6 +6,7 @@ import com.example.eshop.services.CategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,12 +20,10 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView openCategoryPage(@PathVariable int id) throws ServiceExceptions, RepositoryExceptions {
-        return categoryService.getCategoryData(id);
-    }
-
-    @GetMapping("/{id}/{page}")
-    public ModelAndView openCategoryPagination(@PathVariable int id, @PathVariable int page) throws ServiceExceptions, RepositoryExceptions {
-        return categoryService.getCategoryDataPagination(id, page);
+    public ModelAndView openCategoryPage(@PathVariable int id,
+                                         @RequestParam(defaultValue = "0") int pageNumber,
+                                         @RequestParam(defaultValue = "10") int pageSize)
+            throws ServiceExceptions, RepositoryExceptions {
+        return categoryService.getCategoryData(id, pageNumber, pageSize);
     }
 }

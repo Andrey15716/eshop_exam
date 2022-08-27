@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-
 import java.util.Objects;
 
 import static com.example.eshop.utils.EshopConstants.ERROR;
@@ -38,7 +37,8 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public ModelAndView login(@ModelAttribute(USER) @Valid User user, BindingResult bindingResult, ModelAndView modelAndView) throws RegistrationExceptions, ServiceExceptions, RepositoryExceptions {
+    public ModelAndView login(@ModelAttribute(USER) @Valid User user,
+                              BindingResult bindingResult, ModelAndView modelAndView) throws RegistrationExceptions, ServiceExceptions, RepositoryExceptions {
         if (bindingResult.hasErrors()) {
             fieldError(NAME, modelAndView, bindingResult);
             fieldError(PASSWORD, modelAndView, bindingResult);
@@ -55,8 +55,9 @@ public class RegistrationController {
 
     private void fieldError(String field, ModelAndView modelAndView, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors(field)) {
-            modelAndView.addObject(field + ERROR, Objects.requireNonNull(bindingResult.getFieldError(field))
-                    .getDefaultMessage());
+            modelAndView.addObject(field + ERROR,
+                    Objects.requireNonNull(bindingResult.getFieldError(field))
+                            .getDefaultMessage());
         }
     }
 }

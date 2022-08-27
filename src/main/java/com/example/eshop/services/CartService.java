@@ -5,7 +5,6 @@ import com.example.eshop.entities.Order;
 import com.example.eshop.entities.Product;
 import com.example.eshop.entities.User;
 import com.example.eshop.exceptions.RepositoryExceptions;
-import com.example.eshop.exceptions.ServiceExceptions;
 import com.example.eshop.repositories.OrderRepository;
 import com.example.eshop.repositories.ProductRepository;
 import com.example.eshop.repositories.UserRepository;
@@ -35,7 +34,7 @@ public class CartService {
         this.userRepository = userRepository;
     }
 
-    public ModelAndView addProductToCart(int productId, Cart shopCart) throws ServiceExceptions, RepositoryExceptions {
+    public ModelAndView addProductToCart(int productId, Cart shopCart) throws RepositoryExceptions {
         ModelMap modelParams = new ModelMap();
         Product product = productRepository.getProductById(productId);
         shopCart.addProduct(product);
@@ -44,12 +43,12 @@ public class CartService {
         return new ModelAndView(CART_PAGE.getPath(), modelParams);
     }
 
-    public ModelAndView buyProduct(Cart shopCart, User user) throws ServiceExceptions, RepositoryExceptions {
+    public ModelAndView buyProduct(Cart shopCart, User user) throws RepositoryExceptions {
         ModelMap modelMap = new ModelMap();
         List<Product> products = shopCart.getProducts();
         int priceOrder = shopCart.getTotalPrice();
         LocalDate date = LocalDate.now();
-        User loggedInUser = userRepository.getUserByLoginAndPass(user);
+        User loggedInUser = userRepository.getUserByNameAndPassword(user.getName(), user.getPassword());
         int userId = loggedInUser.getId();
         user.setId(userId);
         Order order = Order.builder().priceOrder(priceOrder).
@@ -57,7 +56,7 @@ public class CartService {
                 user(user).
                 productList(products).
                 build();
-        Order createdOrder = orderRepository.create(order);
+        Order createdOrder = orderRepository.save(order);
         modelMap.addAttribute(PRICE_ORDER_PARAM.getValue(), shopCart.getTotalPrice());
         modelMap.addAttribute(ORDER_ID_PARAM.getValue(), createdOrder.getId());
         shopCart.clearCart();

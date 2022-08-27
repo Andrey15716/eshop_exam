@@ -26,43 +26,77 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="${contextPath}/login/profile/1">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="${contextPath}/login/profile">Profile</a></li>
             </ul>
         </div>
     </div>
 </nav>
-<div class="container">
-    <div class="col-md-8 offset-md-4">
-        <form method="post">
-            <div class="form-group">
-                <label for="searchParam">Product:</label>
-                <input type="text" class="form-control w-25" id="searchParam" name="searchParam"
-                       placeholder="Введите наименование товара"
-                       required>
-                <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-        </form>
-        <div class="container-fluid mb-4">
-            <c:forEach items="${search_result}" var="searchItem">
-            <div class="card w-25 m-1" type="searchItem">
-                <div>
-                    <a href="${contextPath}/product/${searchItem.getId()}&name=${searchItem.getName()}"></a>
-                    <i class="fa-solid fa-cart-arrow-down fa-2x " style="color: black"></i>
 
-                    <div class="card-body">
-                        <img class="card-img" style="width:45%;height:100%"
-                             src="images/${searchItem.getImageName()}" alt="Product image">
-                        <div class="list-group list-group-flush">
-                            <li class="card-title"><b>Name:</b> <a>${searchItem.getName()}</a></li>
-                            <li class="card-title"><b>Description:</b> <a>${searchItem.getDescription()}</a></li>
-                            <li class="card-title"><b>Price:</b> <a>${searchItem.getPrice()}</a></li>
-                        </div>
-                    </div>
-                </div>
-                </c:forEach>
+<div class="container-fluid">
+    <form method="post" action="${contextPath}/search">
+        <input type="search" placeholder="Поиск товаров"
+               name="searchKey" value="${searchParams.getSearchKey()}">
+        <div class="row">
+            <div class="col-sm-4">
+                <select name="categoryName">
+                    <c:if test="${empty searchParams.getCategoryName()}">
+                        <option selected value="">Не выбрано</option>
+                    </c:if>
+                    <c:if test="${not empty searchParams.getCategoryName()}">
+                        <option selected
+                                value="${searchParams.getCategoryName()}">${searchParams.getCategoryName()}</option>
+                    </c:if>
+                    <option value="Mobiles">Mobiles</option>
+                    <option value="Laptops">Laptops</option>
+                    <option value="GPS">GPS</option>
+                    <option value="Fridges">Fridges</option>
+                    <option value="Cars">Cars</option>
+                    <option value="Camera">Camera</option>
+                    <option value="Photo2">Photo2</option>
+                    <option value="">Не выбрано</option>
+                </select>
+
+                <br>
+                <label for="minPrice"></label><input id="minPrice" type="number" min="0"
+                                                     placeholder="цена от" name="minPrice"
+                                                     value="${searchParams.getMinPrice()}">
+                <label for="maxPrice"></label><input id="maxPrice" type="number" min="0"
+                                                     placeholder="цена до" name="maxPrice"
+                                                     value="${searchParams.getMaxPrice()}">
+
+                <a href="${contextPath}/search?pageNumber=${pageNumber+1}&pageSize=${pageSize}
+                &searchKey=${searchParams.getSearchKey()}&categoryName=${searchParams.getCategoryName()}
+                &minPrice=${searchParams.getMinPrice()}&maxPrice=${searchParams.getMaxPrice()}">
+
+                    <button id="searchBtn" type="submit">Применить</button>
+                </a>
             </div>
         </div>
-    </div>
+    </form>
 </div>
+<div class="col-sm-8">
+    <c:if test="${not empty search_result}">
+    <h3><p class="text-center">Найденные товары</p></h3>
+    <c:forEach items="${search_result}" var="product">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-1" style="background-color:white;">
+                    <a href="${contextPath}/product/${product.getId()}">
+                        <img class="card-img" style="width:50px;height:120px"
+                             src="${contextPath}/images/${product.getImageName()}" alt="Product images"></a>
+                </div>
+                <div class="col" style="background-color:white;">
+                    <p>Модель:</p> <a>${product.getName()}</a>
+                    <p>Цена:</p> <a>${product.getPrice()} руб</a>
+                </div>
+            </div>
+        </div>
+        <br>
+    </c:forEach>
+</div>
+</c:if>
+<c:if test="${empty search_result}">
+    <h3><p class="text-center">Поиск товаров в нашем магазине ESHOP</p></h3>
+</c:if>
 </body>
 </html>
